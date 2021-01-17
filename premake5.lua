@@ -27,10 +27,7 @@ project "opengl-renderer"
 	}
 	
 	links {
-		"GLFW",
-		"GLAD",
-		"opengl32.lib",
-		"assimp-vc142-mt.lib"
+		
 	}
 	
 	filter "configurations:Debug"
