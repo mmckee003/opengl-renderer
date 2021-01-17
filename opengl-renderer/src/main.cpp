@@ -51,6 +51,8 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CW);
 
     // build and compile our shader program
     // ------------------------------------
