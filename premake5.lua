@@ -8,6 +8,12 @@ workspace "opengl-renderer"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+IncludeDir = {}
+IncludeDir["GLFW"] = "vendor/glfw/include"
+
+-- Includes GLFW premake5.lua --
+include "vendor/glfw"
+
 project "opengl-renderer"
 	location "opengl-renderer"
 	kind "ConsoleApp"
@@ -24,10 +30,11 @@ project "opengl-renderer"
 	
 	includedirs {
 		"%{prj.name}",
+		"%{IncludeDir.GLFW}"
 	}
 	
 	links {
-		
+		"GLFW"
 	}
 	
 	filter "configurations:Debug"
