@@ -10,9 +10,11 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["GLFW"] = "vendor/glfw/include"
+IncludeDir["GLAD"] = "vendor/glad/include"
 
 -- Includes GLFW premake5.lua --
 include "vendor/glfw"
+include "vendor/glad"
 
 project "opengl-renderer"
 	location "opengl-renderer"
@@ -30,11 +32,14 @@ project "opengl-renderer"
 	
 	includedirs {
 		"%{prj.name}",
-		"%{IncludeDir.GLFW}"
+		"%{IncludeDir.GLFW}",
+		"%{IncludeDir.GLAD}"
 	}
 	
 	links {
-		"GLFW"
+		"GLFW",
+		"GLAD",
+		"opengl32.lib"
 	}
 	
 	filter "configurations:Debug"
