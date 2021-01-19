@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Renderer/Shader.h"
+#include "Renderer/Buffer.h"
 
 #include <iostream>
 
@@ -51,17 +52,15 @@ int main()
          0.5f, -0.5f,  0.0f
     };
 
-    unsigned int vao, vbo;
+    unsigned int vao;
     glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
     glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+    
+    // vertex buffer object
+    Vertex_Buffer vbo(vertices, sizeof(vertices));
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    vbo.unbind();
 
     glBindVertexArray(0);
 
