@@ -48,8 +48,14 @@ int main()
 
     float vertices[] = {
         -0.5f, -0.5f,  0.0f,
-         0.0f,  0.5f,  0.0f,
-         0.5f, -0.5f,  0.0f
+        -0.5f,  0.5f,  0.0f,
+         0.5f, -0.5f,  0.0f,
+         0.5f,  0.5f,  0.0f
+    };
+
+    unsigned int indices[] = {
+        0, 1, 2,
+        2, 1, 3
     };
 
     unsigned int vao;
@@ -61,6 +67,9 @@ int main()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     vbo.unbind();
+
+    // index buffer object
+    Index_Buffer ibo(indices, sizeof(indices));
 
     glBindVertexArray(0);
 
@@ -79,7 +88,7 @@ int main()
 
         shader.bind();
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

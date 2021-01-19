@@ -15,5 +15,11 @@ struct Vertex_Buffer
 
 struct Index_Buffer
 {
+	unsigned int index_buffer_ID;
 
+	Index_Buffer(const unsigned int* indices, unsigned int size);
+	~Index_Buffer();
+
+	void bind() const;
+	void unbind() const;
 };
