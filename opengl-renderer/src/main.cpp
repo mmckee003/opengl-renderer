@@ -3,6 +3,7 @@
 
 #include "Renderer/Shader.h"
 #include "Renderer/Buffer.h"
+#include "Renderer/VertexArray.h"
 
 #include <iostream>
 
@@ -58,20 +59,13 @@ int main()
         2, 1, 3
     };
 
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    
-    // vertex buffer object
+    Vertex_Array vao;
     Vertex_Buffer vbo(vertices, sizeof(vertices));
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    vbo.unbind();
-
-    // index buffer object
     Index_Buffer ibo(indices, sizeof(indices));
+    vao.set_vertex_buffer(&vbo);
+    vao.set_index_buffer(&ibo);
 
-    glBindVertexArray(0);
+    vao.unbind();
 
     // render loop
     // -----------
@@ -87,7 +81,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         shader.bind();
-        glBindVertexArray(vao);
+        vao.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
 
         glfwSwapBuffers(window);

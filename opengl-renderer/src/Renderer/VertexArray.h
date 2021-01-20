@@ -7,7 +7,7 @@
 struct Vertex_Array
 {
 	unsigned int renderer_ID;
-	std::vector<Vertex_Buffer*> vertex_buffers;
+	Vertex_Buffer* vertex_buffer;
 	Index_Buffer* index_buffer;
 
 	Vertex_Array();
@@ -15,6 +15,6 @@ struct Vertex_Array
 
 	void bind() const;
 	void unbind() const;
-	void add_vertex_buffer(const Vertex_Buffer* vertex_buffer);
-	void set_index_buffer(const Index_Buffer* index_buffer);
+	void set_vertex_buffer(Vertex_Buffer* vertex_buffer);
+	void set_index_buffer(Index_Buffer* index_buffer);
 };

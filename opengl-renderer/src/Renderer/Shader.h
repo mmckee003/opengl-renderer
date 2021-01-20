@@ -6,8 +6,6 @@
 struct Shader
 {
 	unsigned int shader_ID;
-	unsigned int vertex_shader;
-	unsigned int fragment_shader;
 
 	Shader(const std::string& vertex_shader_filepath, const std::string& fragment_shader_filepath);
 	~Shader();
