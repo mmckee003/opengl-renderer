@@ -30,4 +30,8 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\textured_quad_vertex_shader.glsl" />
+    <None Include="assets\shaders\textured_quad_fragment_shader.glsl" />
+  </ItemGroup>
 </Project>
