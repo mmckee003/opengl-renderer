@@ -16,6 +16,7 @@
     <ClInclude Include="src\Renderer\VertexArray.h">
       <Filter>Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\lib\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mesh.cpp" />
@@ -29,6 +30,7 @@
       <Filter>Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\lib\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\textured_quad_vertex_shader.glsl" />
