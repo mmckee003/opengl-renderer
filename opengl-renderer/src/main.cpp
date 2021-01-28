@@ -11,8 +11,18 @@
 
 #include <iostream>
 
+// temp struct
+enum class Camera_Movement
+{
+    FORWARD,
+    BACKWARD,
+    LEFT,
+    RIGHT
+};
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
+void process_input(GLFWwindow* window);
+void process_keyboard(Camera_Movement direction, float delta_time);
 
 // settings
 // const unsigned int SCR_WIDTH = 960;
@@ -25,6 +35,7 @@ const unsigned int SCR_HEIGHT = 2000;
 glm::vec3 camera_pos     = glm::vec3(0.0f, 0.0f, 10.0f);
 glm::vec3 camera_forward = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 camera_up      = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 camera_right   = glm::vec3(1.0f, 0.0f, 0.0f);
 
 // timing
 float delta_time = 0.0f;
@@ -157,7 +168,7 @@ int main()
 
         // input
         // -----
-        processInput(window);
+        process_input(window);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -197,7 +208,7 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window)
+void process_input(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -207,13 +218,34 @@ void processInput(GLFWwindow* window)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        process_keyboard(Camera_Movement::FORWARD, delta_time);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        process_keyboard(Camera_Movement::BACKWARD, delta_time);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        process_keyboard(Camera_Movement::LEFT, delta_time);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        process_keyboard(Camera_Movement::RIGHT, delta_time);
+
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+void process_keyboard(Camera_Movement direction, float delta_time)
+{
+    float movement_speed = 5.0f;
+    float velocity = movement_speed * delta_time;
+    if (direction == Camera_Movement::FORWARD)
+        camera_pos += camera_forward * velocity;
+    if (direction == Camera_Movement::BACKWARD)
+        camera_pos -= camera_forward * velocity;
+    if (direction == Camera_Movement::LEFT)
+        camera_pos -= camera_right * velocity;
+    if (direction == Camera_Movement::RIGHT)
+        camera_pos += camera_right * velocity;
 }
