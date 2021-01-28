@@ -6,6 +6,8 @@
 #include "Renderer/VertexArray.h"
 
 #include "lib/stb_image.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 
@@ -15,8 +17,18 @@ void processInput(GLFWwindow* window);
 // settings
 // const unsigned int SCR_WIDTH = 960;
 // const unsigned int SCR_HEIGHT = 540;
-const unsigned int SCR_WIDTH  = 1920;
-const unsigned int SCR_HEIGHT = 1920;
+const unsigned int SCR_WIDTH  = 3000;
+const unsigned int SCR_HEIGHT = 2000;
+
+// TODO: a camera sturct would probably be usefule here
+// camera globals
+glm::vec3 camera_pos     = glm::vec3(0.0f, 0.0f, 10.0f);
+glm::vec3 camera_forward = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 camera_up      = glm::vec3(0.0f, 1.0f, 0.0f);
+
+// timing
+float delta_time = 0.0f;
+float last_frame = 0.0f;
 
 int main()
 {
@@ -46,10 +58,11 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-    // glEnable(GL_CULL_FACE);
-    // glFrontFace(GL_CW);
+    glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+    glEnable(GL_DEPTH_TEST);
 
-    Shader shader("assets/shaders/textured_quad_vertex_shader.glsl", "assets/shaders/textured_quad_fragment_shader.glsl");
+    Shader shader("assets/shaders/basic_3d_vertex_shader.glsl", "assets/shaders/basic_3d_fragment_shader.glsl");
     /*
     float vertices[] = {
         -0.5f, -0.5f,  0.0f,
@@ -59,22 +72,51 @@ int main()
     };
     */
 
-    float textured_vertices[] = {
-        // positions          // colors           // texture coords
-         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+    float textured_cube_vertices[] = {
+         // positions          // colors           // texture coords
+         0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // bottom right
+         0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // top right
+        -0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // top left
+        -0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f,   // bottom left
+
+         0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 0.0f,   0.0f, 0.0f,   // bottom right (from front) 
+        -0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom left  (from front)
+        -0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,   1.0f, 1.0f,   // top left     (from front)
+         0.5f,  0.5f, -0.5f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top right    (from front)
     };
 
-    unsigned int indices[] = {
-        0, 1, 2,
-        0, 3, 2
+    unsigned int textured_cube_indices[] = {
+        // front face
+        0, 1, 3,
+        3, 1, 2,
+        // right face
+        1, 0, 4,
+        1, 4, 7,
+        // back face
+        5, 6, 4,
+        4, 6, 7,
+        // left face
+        6, 5, 3,
+        6, 3, 2,
+        // top face
+        6, 2, 1,
+        6, 1, 7,
+        // bottom face
+        3, 5, 4,
+        3, 4, 0
+    };
+
+    glm::vec3 cube_positions[] = {
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(3.0f, 0.0f, 0.0f),
+        glm::vec3(-3.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 3.0f, 0.0f),
+        glm::vec3(0.0f, -3.0f, 0.0f),
     };
 
     Vertex_Array vao;
-    Vertex_Buffer vbo(textured_vertices, sizeof(textured_vertices));
-    Index_Buffer ibo(indices, sizeof(indices));
+    Vertex_Buffer vbo(textured_cube_vertices, sizeof(textured_cube_vertices));
+    Index_Buffer ibo(textured_cube_indices, sizeof(textured_cube_indices));
     vao.set_vertex_buffer(&vbo);
     vao.set_index_buffer(&ibo);
 
@@ -108,6 +150,11 @@ int main()
     // -----------
     while (!glfwWindowShouldClose(window))
     {
+
+        float current_frame = glfwGetTime();
+        delta_time = current_frame - last_frame;
+        last_frame = current_frame;
+
         // input
         // -----
         processInput(window);
@@ -115,12 +162,28 @@ int main()
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.bind();
+
+        float fov = 45.0f;
+        glm::mat4 projection_matrix = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        glm::mat4 view_matrix = glm::lookAt(camera_pos, camera_pos + camera_forward, camera_up);
+        shader.set_mat4("projection", projection_matrix);
+        shader.set_mat4("view", view_matrix);
+
         glBindTexture(GL_TEXTURE_2D, texture);
         vao.bind();
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)0);
+
+        for (unsigned int i = 0; i < 5; i++)
+        {
+            glm::mat4 world_matrix = glm::mat4(1.0f);
+            world_matrix = glm::translate(world_matrix, cube_positions[i]);
+            float angle = 180.0f * sin(glfwGetTime());
+            world_matrix = glm::rotate(world_matrix, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
+            shader.set_mat4("world", world_matrix);
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, (void*)0);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -138,6 +201,12 @@ void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

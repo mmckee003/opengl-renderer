@@ -17,6 +17,7 @@
       <Filter>Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\lib\stb_image.h" />
+    <ClInclude Include="src\Renderer\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Mesh.cpp" />
@@ -31,9 +32,12 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\lib\stb_image.cpp" />
+    <ClCompile Include="src\Renderer\Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\textured_quad_vertex_shader.glsl" />
     <None Include="assets\shaders\textured_quad_fragment_shader.glsl" />
+    <None Include="assets\shaders\basic_3d_vertex_shader.glsl" />
+    <None Include="assets\shaders\basic_3d_fragment_shader.glsl" />
   </ItemGroup>
 </Project>

@@ -91,6 +91,7 @@
     <ClInclude Include="src\lib\stb_image.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Renderer\Buffer.h" />
+    <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Renderer\VertexArray.h" />
   </ItemGroup>
@@ -98,6 +99,7 @@
     <ClCompile Include="src\lib\stb_image.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Renderer\Camera.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -111,6 +113,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\shaders\basic_3d_fragment_shader.glsl" />
+    <None Include="assets\shaders\basic_3d_vertex_shader.glsl" />
     <None Include="assets\shaders\textured_quad_fragment_shader.glsl" />
     <None Include="assets\shaders\textured_quad_vertex_shader.glsl" />
   </ItemGroup>

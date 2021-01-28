@@ -77,3 +77,8 @@ void Shader::unbind() const
 {
 	glUseProgram(0);
 }
+
+void Shader::set_mat4(const std::string& name, const glm::mat4& data)
+{
+	glUniformMatrix4fv(glGetUniformLocation(shader_ID, name.c_str()), 1, false, &data[0][0]);
+}

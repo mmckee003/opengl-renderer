@@ -2,13 +2,13 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <string>
 
-struct VertexXCNU
+struct VertexXNU
 {
-	float position[3];
-	float color[3];
-	int normal[3];
-	int UV1[2];
+	glm::vec3 position;
+	glm::vec3 normal;
+	glm::vec2 UV;
 };
 
 struct Triangle_List_Info
@@ -20,13 +20,21 @@ struct Triangle_List_Info
 	// texture map
 };
 
+struct Material
+{
+	std::string name;
+	std::string diffuse_map;
+};
+
 struct Mesh
 {
 	// Imported vertex data
 	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec4> colors;
-	std::vector<glm::vec3> normals;
 	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals;
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> bitangents;
 
-
+	std::vector<Triangle_List_Info> triangle_list_info;
+	std::vector<Material> material_info;
 };
