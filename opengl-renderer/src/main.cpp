@@ -23,6 +23,7 @@ enum class Camera_Movement
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void process_input(GLFWwindow* window);
 void process_keyboard(Camera_Movement direction, float delta_time);
+glm::mat4 look_at(glm::vec3 eye, glm::vec3 target, glm::vec3 up);
 
 // settings
 // const unsigned int SCR_WIDTH = 960;
@@ -69,8 +70,8 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-    glEnable(GL_CULL_FACE);
-    glFrontFace(GL_CCW);
+    //glEnable(GL_CULL_FACE);
+    //glFrontFace(GL_CCW);
     glEnable(GL_DEPTH_TEST);
 
     Shader shader("assets/shaders/basic_3d_vertex_shader.glsl", "assets/shaders/basic_3d_fragment_shader.glsl");
@@ -179,7 +180,7 @@ int main()
 
         float fov = 45.0f;
         glm::mat4 projection_matrix = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view_matrix = glm::lookAt(camera_pos, camera_pos + camera_forward, camera_up);
+        glm::mat4 view_matrix = look_at(camera_pos, camera_pos + camera_forward, camera_up);
         shader.set_mat4("projection", projection_matrix);
         shader.set_mat4("view", view_matrix);
 
@@ -248,4 +249,26 @@ void process_keyboard(Camera_Movement direction, float delta_time)
         camera_pos -= camera_right * velocity;
     if (direction == Camera_Movement::RIGHT)
         camera_pos += camera_right * velocity;
+}
+
+glm::mat4 look_at(glm::vec3 eye, glm::vec3 target, glm::vec3 up_dir)
+{
+    glm::vec3 forward = glm::normalize(target - eye);
+    glm::vec3 right   = glm::normalize(glm::cross(forward, up_dir));
+    glm::vec3 up      = glm::cross(right, forward);
+
+    glm::mat4 view_matrix = glm::mat4(1.0f);
+    view_matrix[0][0] = right.x;
+    view_matrix[1][0] = right.y;
+    view_matrix[2][0] = right.z;
+    view_matrix[0][1] = up.x;
+    view_matrix[1][1] = up.y;
+    view_matrix[2][1] = up.z;
+    view_matrix[0][2] = -forward.x;
+    view_matrix[1][2] = -forward.y;
+    view_matrix[2][2] = -forward.z;
+    view_matrix[3][0] = -glm::dot(right, eye);
+    view_matrix[3][1] = -glm::dot(up, eye);
+    view_matrix[3][2] =  glm::dot(forward, eye);
+    return view_matrix;
 }
