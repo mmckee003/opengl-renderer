@@ -33,9 +33,9 @@ const unsigned int SCR_HEIGHT = 2000;
 
 // TODO: a camera sturct would probably be usefule here
 // camera globals
-glm::vec3 camera_pos     = glm::vec3(0.0f, 0.0f, 10.0f);
-glm::vec3 camera_forward = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 camera_up      = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 camera_pos     = glm::vec3(0.0f, -10.0f, 0.0f);
+glm::vec3 camera_forward = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 camera_up      = glm::vec3(0.0f, 0.0f, 1.0f);
 glm::vec3 camera_right   = glm::vec3(1.0f, 0.0f, 0.0f);
 
 // timing
@@ -120,10 +120,11 @@ int main()
 
     glm::vec3 cube_positions[] = {
         glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(3.0f, 0.0f, 0.0f),
-        glm::vec3(-3.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 3.0f, 0.0f),
-        glm::vec3(0.0f, -3.0f, 0.0f),
+        //glm::vec3(3.0f, 0.0f, 0.0f),
+        //glm::vec3(-3.0f, 0.0f, 0.0f),
+        //glm::vec3(0.0f, 3.0f, 0.0f),
+        //glm::vec3(0.0f, -3.0f, 0.0f),
+        glm::vec3(0.0f, 0.0f, 3.0f)
     };
 
     Vertex_Array vao;
@@ -187,7 +188,7 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture);
         vao.bind();
 
-        for (unsigned int i = 0; i < 5; i++)
+        for (unsigned int i = 0; i < 2; i++)
         {
             glm::mat4 world_matrix = glm::mat4(1.0f);
             world_matrix = glm::translate(world_matrix, cube_positions[i]);
